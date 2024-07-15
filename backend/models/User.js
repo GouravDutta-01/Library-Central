@@ -4,7 +4,10 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: { type: String, enum: ['librarian', 'user'], default: 'user' },
-    requestedBooks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ebook' }],
+    requestedBooks: [{
+        ebook: { type: mongoose.Schema.Types.ObjectId, ref: 'Ebook' },
+        status: { type: String, enum: ['pending', 'granted', 'rejected'], default: 'pending' }
+    }],
     issuedBooks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ebook' }],
     feedback: [
         {

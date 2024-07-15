@@ -35,6 +35,12 @@ router.get('/dashboard', auth, librarianAuth, async (req, res) => {
 router.post('/sections', auth, librarianAuth, async (req, res) => {
     const { name, description } = req.body;
     try {
+        // Check if section with the same name already exists
+        let existingSection = await Section.findOne({ name });
+        if (existingSection) {
+            return res.status(400).json({ msg: 'Section already exists' });
+        }
+
         let section = new Section({
             name,
             description
@@ -79,6 +85,11 @@ router.delete('/sections/:id', auth, librarianAuth, async (req, res) => {
 router.post('/ebooks', auth, librarianAuth, async (req, res) => {
     const { name, content, authors, section } = req.body;
     try {
+        let sectionExists = await Section.findById(section);
+        if (!sectionExists) {
+            return res.status(400).json({ msg: 'Section does not exist' });
+        }
+
         let ebook = new Ebook({
             name,
             content,
@@ -99,8 +110,15 @@ router.put('/ebooks/:id', auth, librarianAuth, async (req, res) => {
     try {
         let ebook = await Ebook.findById(req.params.id);
         if (!ebook) {
-            return res.status(404).json({ msg: 'E-book not found' });
+            return res.status(404).json({ msg: 'Ebook not found' });
         }
+        if (section) {
+            let sectionExists = await Section.findById(section);
+            if (!sectionExists) {
+                return res.status(400).json({ msg: 'Section does not exist' });
+            }
+        }
+
         ebook.name = name || ebook.name;
         ebook.content = content || ebook.content;
         ebook.authors = authors || ebook.authors;
@@ -116,30 +134,37 @@ router.put('/ebooks/:id', auth, librarianAuth, async (req, res) => {
 router.delete('/ebooks/:id', auth, librarianAuth, async (req, res) => {
     try {
         await Ebook.findByIdAndRemove(req.params.id);
-        res.json({ msg: 'E-book removed' });
+        res.json({ msg: 'Ebook removed' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 });
 
-// Grant/Revoke E-book
-router.post('/ebooks/:id/grant', auth, librarianAuth, async (req, res) => {
-    const { userId } = req.body;
+module.exports = router;
+// Approve E-book Request
+router.post('/ebooks/:id/approve', auth, librarianAuth, async (req, res) => {
     try {
         let ebook = await Ebook.findById(req.params.id);
         if (!ebook) {
             return res.status(404).json({ msg: 'E-book not found' });
         }
-        let user = await User.findById(userId);
+
+        let user = await User.findOne({ 'requestedBooks.ebook': req.params.id });
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        if (user.issuedBooks.length >= 5) {
-            return res.status(400).json({ msg: 'User has already requested 5 e-books' });
+        const request = user.requestedBooks.find(book => book.ebook.toString() === req.params.id);
+        if (!request) {
+            return res.status(400).json({ msg: 'E-book request not found' });
         }
 
+        if (request.status !== 'pending') {
+            return res.status(400).json({ msg: 'E-book request already processed' });
+        }
+
+        request.status = 'granted';
         ebook.issuedTo = user._id;
         ebook.dateIssued = new Date();
         ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
@@ -149,21 +174,22 @@ router.post('/ebooks/:id/grant', auth, librarianAuth, async (req, res) => {
         await ebook.save();
         await user.save();
 
-        res.json({ msg: 'E-book access granted' });
+        res.json({ msg: 'E-book request approved' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 });
 
+// Revoke E-book
 router.post('/ebooks/:id/revoke', auth, librarianAuth, async (req, res) => {
-    const { userId } = req.body;
     try {
         let ebook = await Ebook.findById(req.params.id);
         if (!ebook) {
             return res.status(404).json({ msg: 'E-book not found' });
         }
-        let user = await User.findById(userId);
+
+        let user = await User.findById(ebook.issuedTo);
         if (!user) {
             return res.status(404).json({ msg: 'User not found' });
         }
@@ -179,11 +205,9 @@ router.post('/ebooks/:id/revoke', auth, librarianAuth, async (req, res) => {
         await ebook.save();
         await user.save();
 
-        res.json({ msg: 'E-book access revoked' });
+        res.json({ msg: 'E-book revoked successfully' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 });
-
-module.exports = router;
