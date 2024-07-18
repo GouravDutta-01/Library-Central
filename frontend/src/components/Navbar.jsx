@@ -8,7 +8,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import MobileMenu from "./MobileMenu";
 
@@ -17,10 +17,22 @@ const Navbar = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
+  const location = useLocation();
+  const currentPath = location.pathname;
 
   const handleLogout = () => {
     logout();
     navigate("/");
+  };
+
+  const getButtonStyle = (path) => {
+    return currentPath === path
+      ? {
+          background: "linear-gradient(to right, #0c174a, #1b394d)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }
+      : {};
   };
 
   return (
@@ -41,7 +53,12 @@ const Navbar = () => {
         ) : (
           <Grid container spacing={2} justifyContent="flex-end">
             <Grid item>
-              <Button color="inherit" component={Link} to="/">
+              <Button
+                color="inherit"
+                component={Link}
+                to="/"
+                sx={getButtonStyle("/")}
+              >
                 Home
               </Button>
             </Grid>
@@ -51,6 +68,9 @@ const Navbar = () => {
                   color="inherit"
                   component={Link}
                   to={role === "librarian" ? "/librarian" : "/user"}
+                  sx={getButtonStyle(
+                    role === "librarian" ? "/librarian" : "/user"
+                  )}
                 >
                   Dashboard
                 </Button>
@@ -63,12 +83,18 @@ const Navbar = () => {
                     color="inherit"
                     component={Link}
                     to="/manage-sections"
+                    sx={getButtonStyle("/manage-sections")}
                   >
                     Manage Sections
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button color="inherit" component={Link} to="/manage-ebooks">
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/manage-ebooks"
+                    sx={getButtonStyle("/manage-ebooks")}
+                  >
                     Manage E-books
                   </Button>
                 </Grid>
@@ -77,6 +103,7 @@ const Navbar = () => {
                     color="inherit"
                     component={Link}
                     to="/manage-requests"
+                    sx={getButtonStyle("/manage-requests")}
                   >
                     Manage Requests
                   </Button>
@@ -86,6 +113,7 @@ const Navbar = () => {
                     color="inherit"
                     component={Link}
                     to="/manage-feedbacks"
+                    sx={getButtonStyle("/manage-feedbacks")}
                   >
                     Manage Feedbacks
                   </Button>
@@ -95,7 +123,12 @@ const Navbar = () => {
             {role === "user" && (
               <>
                 <Grid item>
-                  <Button color="inherit" component={Link} to="/search">
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/search"
+                    sx={getButtonStyle("/search")}
+                  >
                     Search
                   </Button>
                 </Grid>
@@ -104,6 +137,7 @@ const Navbar = () => {
                     color="inherit"
                     component={Link}
                     to="/available-books"
+                    sx={getButtonStyle("/available-books")}
                   >
                     Available Books
                   </Button>
@@ -112,19 +146,33 @@ const Navbar = () => {
             )}
             {role ? (
               <Grid item>
-                <Button color="inherit" onClick={handleLogout}>
+                <Button
+                  color="inherit"
+                  onClick={handleLogout}
+                  sx={getButtonStyle("/logout")}
+                >
                   Logout
                 </Button>
               </Grid>
             ) : (
               <>
                 <Grid item>
-                  <Button color="inherit" component={Link} to="/register">
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/register"
+                    sx={getButtonStyle("/register")}
+                  >
                     Register
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button color="inherit" component={Link} to="/login">
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/login"
+                    sx={getButtonStyle("/login")}
+                  >
                     Login
                   </Button>
                 </Grid>

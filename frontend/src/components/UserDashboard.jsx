@@ -3,6 +3,7 @@ import { AppContext } from '../context/AppContext';
 import axios from 'axios';
 import { Container, Typography, Button, Modal, Box, TextField, Rating, Card, CardContent, CardActions, Grid, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { toast } from 'react-toastify';
 
 const UserDashboard = () => {
     const { token } = useContext(AppContext);
@@ -45,11 +46,13 @@ const UserDashboard = () => {
                 { rating, comment },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
+            toast.success('Feedback sent successfully');
             setOpen(false);
             setRating(0);
             setComment('');
         } catch (err) {
             console.error(err);
+            toast.error('Error sending Feedback');
         }
     };
 

@@ -43,7 +43,7 @@ const FeedbackManagement = () => {
       toast.success('Feedback deleted successfully');
     } catch (err) {
       console.error(err);
-      toast.error('Error deleting feedback');
+      toast.error('Error deleting Feedback');
     }
   };
 
