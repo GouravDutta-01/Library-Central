@@ -323,4 +323,56 @@ router.post('/ebooks/:id/revoke', auth, librarianAuth, async (req, res) => {
     }
 });
 
+// All feedbacks
+router.get('/feedbacks', auth, librarianAuth, async (req, res) => {
+    try {
+        const users = await User.find({ 'feedback.0': { $exists: true } })
+            .populate('feedback.ebook')
+            .select('username feedback');
+
+        const feedbacks = [];
+
+        users.forEach(user => {
+            user.feedback.forEach(feedback => {
+                feedbacks.push({
+                    _id: feedback._id,
+                    username: user.username,
+                    ebook: feedback.ebook ? feedback.ebook.name : 'Deleted Ebook',
+                    rating: feedback.rating,
+                    comment: feedback.comment
+                });
+            });
+        });
+
+        res.json(feedbacks);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+// Delete a feedback
+router.delete('/feedbacks/:id', auth, librarianAuth, async (req, res) => {
+    try {
+        const feedbackId = req.params.id;
+
+        if (!mongoose.Types.ObjectId.isValid(feedbackId)) {
+            return res.status(400).json({ msg: 'Invalid feedback ID' });
+        }
+
+        const user = await User.findOne({ 'feedback._id': feedbackId });
+        if (!user) {
+            return res.status(404).json({ msg: 'Feedback not found' });
+        }
+
+        user.feedback = user.feedback.filter(f => f._id.toString() !== feedbackId);
+        await user.save();
+
+        res.json({ msg: 'Feedback deleted successfully' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 module.exports = router;
