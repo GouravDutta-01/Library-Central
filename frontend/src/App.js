@@ -17,6 +17,7 @@ import FeedbackManagement from "./components/FeedbackManagement";
 import AvailableBooks from "./components/AvailableBooks";
 import Search from "./components/Search";
 import NotFound from "./components/NotFound";
+import Footer from "./components/Footer";
 import "./index.css";
 
 const App = () => {
@@ -95,6 +96,7 @@ const App = () => {
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <Footer/>
       </Router>
     </AppProvider>
   );

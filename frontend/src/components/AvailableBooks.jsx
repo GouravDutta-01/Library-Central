@@ -50,7 +50,7 @@ const AvailableBooks = () => {
       <Typography variant="h4" component="h1" gutterBottom>
         Available Books
       </Typography>
-      <TableContainer component={Paper} sx={{ border: '1px solid #ccc', marginTop: 2, marginBottom: 5 }}>
+      <TableContainer component={Paper} sx={{ border: '1px solid #ccc', marginTop: 2, marginBottom: 10 }}>
         <Table>
           <TableHead>
             <TableRow>

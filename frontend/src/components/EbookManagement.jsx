@@ -148,7 +148,7 @@ const EbookManagement = () => {
       <Button onClick={addEbook} variant="contained" color="primary" sx={{ marginBottom: 2 }}>
         Add E-book
       </Button>
-      <TableContainer component={Paper} sx={{ border: '1px solid #ccc', marginTop: 2, marginBottom: 5 }}>
+      <TableContainer component={Paper} sx={{ border: '1px solid #ccc', marginTop: 2, marginBottom: 10 }}>
         <Table>
           <TableHead>
             <TableRow>

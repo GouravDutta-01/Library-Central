@@ -142,7 +142,7 @@ const LibrarianDashboard = () => {
       <Typography variant="h6" gutterBottom sx={{ paddingTop: 5 }}>
         All Users
       </Typography>
-      <TableContainer component={Paper} sx={{ border: "1px solid #ccc" }}>
+      <TableContainer component={Paper} sx={{ border: "1px solid #ccc", marginTop: 2, marginBottom: 10 }}>
         <Table>
           <TableHead>
             <TableRow>
