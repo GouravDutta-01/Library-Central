@@ -222,27 +222,29 @@ router.get('/requests', auth, librarianAuth, async (req, res) => {
 router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
     const { status } = req.body;
     try {
-        const request = await User.findOneAndUpdate(
-            { 'requestedBooks._id': req.params.id },
-            { 'requestedBooks.$.status': status },
-            { new: true }
-        ).populate('requestedBooks.ebook');
+        const user = await User.findOne({ 'requestedBooks._id': req.params.id });
+        if (!user) {
+            return res.status(404).json({ msg: 'Request not found' });
+        }
 
+        const request = user.requestedBooks.id(req.params.id);
         if (!request) {
             return res.status(404).json({ msg: 'Request not found' });
         }
 
+        request.status = status;
+
         if (status === 'granted') {
-            const ebook = await Ebook.findById(request.requestedBooks[0].ebook._id);
-            ebook.issuedTo = request._id;
+            const ebook = await Ebook.findById(request.ebook);
+            ebook.issuedTo = user._id;
             ebook.dateIssued = new Date();
             ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
-
             await ebook.save();
 
-            request.issuedBooks.push(ebook._id);
-            await request.save();
+            user.issuedBooks.push(ebook._id);
         }
+
+        await user.save();
 
         res.json({ msg: 'Request updated successfully' });
     } catch (err) {
@@ -278,7 +280,7 @@ router.post('/ebooks/:id/approve', auth, librarianAuth, async (req, res) => {
         ebook.dateIssued = new Date();
         ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
-        user.issuedBooks.push(ebook._id);
+        user.issuedBooks.push(ebook._id); // This line needs to add the ebook to issuedBooks
 
         await ebook.save();
         await user.save();
