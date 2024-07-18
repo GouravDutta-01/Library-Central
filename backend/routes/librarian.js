@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const auth = require('../middleware/auth');
 const User = require('../models/User');
 const Section = require('../models/Section');
@@ -16,15 +17,39 @@ const librarianAuth = (req, res, next) => {
 // Librarian Dashboard
 router.get('/dashboard', auth, librarianAuth, async (req, res) => {
     try {
-        const users = await User.countDocuments({ role: 'user' });
-        const sections = await Section.countDocuments();
-        const ebooks = await Ebook.countDocuments();
-        const stats = {
-            users,
-            sections,
-            ebooks
-        };
-        res.json(stats);
+      const usersCount = await User.countDocuments({ role: 'user' });
+      const sections = await Section.countDocuments();
+      const ebooks = await Ebook.countDocuments();
+  
+      // Fetch all users with their usernames and roles
+      const users = await User.find({}, 'username role');
+  
+      const stats = { usersCount, sections, ebooks, users };
+      res.json(stats);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  });
+
+// Delete a user
+router.delete('/user/:id', auth, librarianAuth, async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const authenticatedUserId = req.user.id;
+
+        if (userId === authenticatedUserId) {
+            return res.status(403).json({ msg: 'You cannot delete your own account' });
+        }
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        await User.findByIdAndDelete(userId);
+        res.json({ msg: 'User deleted successfully' });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
@@ -73,10 +98,26 @@ router.put('/sections/:id', auth, librarianAuth, async (req, res) => {
 
 router.delete('/sections/:id', auth, librarianAuth, async (req, res) => {
     try {
-        await Section.findByIdAndRemove(req.params.id);
+        // Check if the provided ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ msg: 'Invalid section ID' });
+        }
+
+        const section = await Section.findById(req.params.id);
+        if (!section) {
+            return res.status(404).json({ msg: 'Section not found' });
+        }
+
+        // Check for related ebooks and handle them
+        const relatedEbooks = await Ebook.find({ section: req.params.id });
+        if (relatedEbooks.length > 0) {
+            return res.status(400).json({ msg: 'Section has related ebooks' });
+        }
+
+        await Section.findByIdAndDelete(req.params.id);
         res.json({ msg: 'Section removed' });
     } catch (err) {
-        console.error(err.message);
+        console.error('Error deleting section:', err.message);
         res.status(500).send('Server error');
     }
 });
@@ -133,15 +174,83 @@ router.put('/ebooks/:id', auth, librarianAuth, async (req, res) => {
 
 router.delete('/ebooks/:id', auth, librarianAuth, async (req, res) => {
     try {
-        await Ebook.findByIdAndRemove(req.params.id);
+        // Check if the provided ID is a valid ObjectId
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ msg: 'Invalid ebook ID' });
+        }
+
+        const ebook = await Ebook.findById(req.params.id);
+        if (!ebook) {
+            return res.status(404).json({ msg: 'Ebook not found' });
+        }
+
+        await Ebook.findByIdAndDelete(req.params.id);
         res.json({ msg: 'Ebook removed' });
+    } catch (err) {
+        console.error('Error deleting ebook:', err.message);
+        res.status(500).send('Server error');
+    }
+});
+
+// View all requests
+router.get('/requests', auth, librarianAuth, async (req, res) => {
+    try {
+        const users = await User.find({ 'requestedBooks.0': { $exists: true } })
+            .populate('requestedBooks.ebook')
+            .select('username requestedBooks');
+
+        const requests = [];
+        users.forEach(user => {
+            user.requestedBooks.forEach(request => {
+                requests.push({
+                    _id: request._id,
+                    username: user.username,
+                    ebook: request.ebook,
+                    status: request.status
+                });
+            });
+        });
+
+        res.json(requests);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');
     }
 });
 
-module.exports = router;
+// Update request status
+router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
+    const { status } = req.body;
+    try {
+        const request = await User.findOneAndUpdate(
+            { 'requestedBooks._id': req.params.id },
+            { 'requestedBooks.$.status': status },
+            { new: true }
+        ).populate('requestedBooks.ebook');
+
+        if (!request) {
+            return res.status(404).json({ msg: 'Request not found' });
+        }
+
+        if (status === 'granted') {
+            const ebook = await Ebook.findById(request.requestedBooks[0].ebook._id);
+            ebook.issuedTo = request._id;
+            ebook.dateIssued = new Date();
+            ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+
+            await ebook.save();
+
+            request.issuedBooks.push(ebook._id);
+            await request.save();
+        }
+
+        res.json({ msg: 'Request updated successfully' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 // Approve E-book Request
 router.post('/ebooks/:id/approve', auth, librarianAuth, async (req, res) => {
     try {
@@ -211,3 +320,5 @@ router.post('/ebooks/:id/revoke', auth, librarianAuth, async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+module.exports = router;

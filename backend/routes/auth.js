@@ -92,6 +92,7 @@ router.post(
                 return res.status(400).json({ msg: 'Invalid Credentials' });
             }
 
+            // Include user object with id and role in the payload
             const payload = {
                 user: {
                     id: user.id,
@@ -99,13 +100,14 @@ router.post(
                 }
             };
 
+            // Generate JWT token
             jwt.sign(
                 payload,
                 process.env.JWT_SECRET,
                 { expiresIn: '5 days' },
                 (err, token) => {
                     if (err) throw err;
-                    res.json({ token });
+                    res.json({ token, user: payload.user });
                 }
             );
         } catch (err) {

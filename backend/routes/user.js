@@ -45,6 +45,7 @@ router.get('/issued-books', auth, async (req, res) => {
         }
 
         const issuedBooks = user.issuedBooks.map(book => ({
+            _id: book._id,
             name: book.name,
             content: book.content,
             authors: book.authors,
@@ -154,8 +155,13 @@ router.post('/ebooks/:id/return', auth, async (req, res) => {
         ebook.returnDate = null;
 
         let user = await User.findById(userId);
+        
         user.issuedBooks = user.issuedBooks.filter(
             bookId => bookId.toString() !== ebook._id.toString()
+        );
+
+        user.requestedBooks = user.requestedBooks.filter(
+            request => request.ebook.toString() !== ebook._id.toString()
         );
 
         await ebook.save();
