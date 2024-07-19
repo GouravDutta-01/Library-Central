@@ -232,8 +232,6 @@ router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
             return res.status(404).json({ msg: 'Request not found' });
         }
 
-        request.status = status;
-
         if (status === 'granted') {
             const ebook = await Ebook.findById(request.ebook);
             ebook.issuedTo = user._id;
@@ -242,6 +240,14 @@ router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
             await ebook.save();
 
             user.issuedBooks.push(ebook._id);
+        }
+
+        if (status === 'rejected') {
+            user.requestedBooks = user.requestedBooks.filter(
+                (req) => req._id.toString() !== request._id.toString()
+            );
+        } else {
+            request.status = status;
         }
 
         await user.save();
