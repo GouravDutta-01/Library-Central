@@ -28,7 +28,7 @@ const RequestManagement = () => {
 
     const handleRequest = async (id, status) => {
         try {
-            const res = await axios.put(`http://localhost:5000/api/librarian/requests/${id}`, { status }, {
+            await axios.put(`http://localhost:5000/api/librarian/requests/${id}`, { status }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -47,8 +47,9 @@ const RequestManagement = () => {
 
             toast.success(`Request ${status} successfully`);
         } catch (err) {
+            const errorMessage = err.response?.data?.msg || 'Failed to update request';
             console.error(err);
-            toast.error('Failed to update request');
+            toast.error(errorMessage);
         }
     };
 
@@ -65,8 +66,9 @@ const RequestManagement = () => {
             );
             toast.success('E-book revoked successfully');
         } catch (err) {
+            const errorMessage = err.response?.data?.msg || 'Failed to revoke E-book';
             console.error(err);
-            toast.error('Failed to revoke e-book');
+            toast.error(errorMessage);
         }
     };
 

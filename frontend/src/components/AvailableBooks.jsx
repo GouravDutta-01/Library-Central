@@ -40,8 +40,9 @@ const AvailableBooks = () => {
       });
       toast.success('Book requested successfully');
     } catch (err) {
+      const errorMessage = err.response?.data?.msg || 'Error requesting book';
       console.error(err);
-      toast.error('Error requesting book');
+      toast.error(errorMessage);
     }
   };
 

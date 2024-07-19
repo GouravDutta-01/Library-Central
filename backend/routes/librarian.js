@@ -60,6 +60,10 @@ router.delete('/user/:id', auth, librarianAuth, async (req, res) => {
             return res.status(404).json({ msg: 'User not found' });
         }
 
+        if (user.issuedBooks.length > 0) {
+            return res.status(400).json({ msg: 'User has ebooks issued' });
+        }
+
         await User.findByIdAndDelete(userId);
         res.json({ msg: 'User deleted successfully' });
     } catch (err) {
@@ -194,6 +198,10 @@ router.delete('/ebooks/:id', auth, librarianAuth, async (req, res) => {
         const ebook = await Ebook.findById(req.params.id);
         if (!ebook) {
             return res.status(404).json({ msg: 'Ebook not found' });
+        }
+
+        if (ebook.issuedTo) {
+            return res.status(400).json({ msg: 'Ebook is granted to a user' });
         }
 
         await Ebook.findByIdAndDelete(req.params.id);

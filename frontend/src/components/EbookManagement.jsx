@@ -74,8 +74,9 @@ const EbookManagement = () => {
         section: ''
       });
     } catch (err) {
+      const errorMessage = err.response?.data?.msg || 'Error adding E-book';
       console.error(err);
-      toast.error('Error adding e-book');
+      toast.error(errorMessage);
     }
   };
 
@@ -87,8 +88,9 @@ const EbookManagement = () => {
       setEbooks(ebooks.filter(ebook => ebook._id !== id));
       toast.success('E-book deleted successfully');
     } catch (err) {
+      const errorMessage = err.response?.data?.msg || 'Error deleting E-book';
       console.error(err);
-      toast.error('Error deleting e-book');
+      toast.error(errorMessage);
     }
   };
 

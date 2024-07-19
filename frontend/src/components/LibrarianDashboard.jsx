@@ -63,8 +63,9 @@ const LibrarianDashboard = () => {
       }));
       toast.success('User deleted successfully');
     } catch (err) {
+      const errorMessage = err.response?.data?.msg || 'Error deleting User';
       console.error("Error deleting user", err);
-      toast.error('Error deleting User');
+      toast.error(errorMessage);
     }
   };
 

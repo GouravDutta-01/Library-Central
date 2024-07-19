@@ -50,8 +50,9 @@ const SectionManagement = () => {
       setNewSection({ name: '', description: '' });
       toast.success('Section added successfully');
     } catch (err) {
+      const errorMessage = err.response?.data?.msg || 'Error adding Section';
       console.error(err);
-      toast.error('Error adding Section');
+      toast.error(errorMessage);
     }
   };
 
@@ -63,8 +64,9 @@ const SectionManagement = () => {
       setSections(sections.filter(section => section._id !== id));
       toast.success('Section deleted successfully');
     } catch (err) {
+      const errorMessage = err.response?.data?.msg || 'Error deleting Section';
       console.error(err);
-      toast.error('Error deleting Section');
+      toast.error(errorMessage);
     }
   };
 
