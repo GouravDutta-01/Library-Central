@@ -17,20 +17,32 @@ const librarianAuth = (req, res, next) => {
 // Librarian Dashboard
 router.get('/dashboard', auth, librarianAuth, async (req, res) => {
     try {
-      const usersCount = await User.countDocuments({ role: 'user' });
-      const sections = await Section.countDocuments();
-      const ebooks = await Ebook.countDocuments();
-  
-      // Fetch all users with their usernames and roles
-      const users = await User.find({}, 'username role');
-  
-      const stats = { usersCount, sections, ebooks, users };
-      res.json(stats);
+        const usersCount = await User.countDocuments({ role: 'user' });
+        const sections = await Section.countDocuments();
+        const ebooks = await Ebook.countDocuments();
+
+        const users = await User.find({}, 'username role');
+
+        const totalBooksIssued = await User.aggregate([
+            { $unwind: "$issuedBooks" },
+            { $group: { _id: null, count: { $sum: 1 } } }
+        ]);
+
+        const stats = {
+            usersCount,
+            sections,
+            ebooks,
+            users,
+            totalBooksIssued: totalBooksIssued[0]?.count || 0 
+        };
+
+        res.json(stats);
     } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
+        console.error(err.message);
+        res.status(500).send('Server error');
     }
-  });
+});
+
 
 // Delete a user
 router.delete('/user/:id', auth, librarianAuth, async (req, res) => {
@@ -206,7 +218,9 @@ router.get('/requests', auth, librarianAuth, async (req, res) => {
                     _id: request._id,
                     username: user.username,
                     ebook: request.ebook,
-                    status: request.status
+                    status: request.status,
+                    dateIssued: request.status === 'granted' ? request.ebook.dateIssued : null,
+                    returnDate: request.status === 'granted' ? request.ebook.returnDate : null
                 });
             });
         });
@@ -217,6 +231,7 @@ router.get('/requests', auth, librarianAuth, async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
 
 // Update request status
 router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
@@ -234,9 +249,13 @@ router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
 
         if (status === 'granted') {
             const ebook = await Ebook.findById(request.ebook);
+            if (!ebook) {
+                return res.status(404).json({ msg: 'E-book not found' });
+            }
+
             ebook.issuedTo = user._id;
             ebook.dateIssued = new Date();
-            ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+            ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); 
             await ebook.save();
 
             user.issuedBooks.push(ebook._id);
@@ -258,6 +277,7 @@ router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
 
 // Approve E-book Request
 router.post('/ebooks/:id/approve', auth, librarianAuth, async (req, res) => {
@@ -317,6 +337,10 @@ router.post('/ebooks/:id/revoke', auth, librarianAuth, async (req, res) => {
 
         user.issuedBooks = user.issuedBooks.filter(
             bookId => bookId.toString() !== ebook._id.toString()
+        );
+
+        user.requestedBooks = user.requestedBooks.filter(
+            request => request.ebook.toString() !== ebook._id.toString()
         );
 
         await ebook.save();

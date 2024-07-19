@@ -21,6 +21,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PeopleIcon from "@mui/icons-material/People";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import BookIcon from "@mui/icons-material/Book";
+import ImportContactsIcon from "@mui/icons-material/ImportContacts";
 import { toast } from 'react-toastify';
 
 const LibrarianDashboard = () => {
@@ -29,6 +30,7 @@ const LibrarianDashboard = () => {
     usersCount: 0,
     sections: 0,
     ebooks: 0,
+    totalBooksIssued: 0,
     users: [],
   });
 
@@ -72,13 +74,14 @@ const LibrarianDashboard = () => {
         Librarian Dashboard
       </Typography>
       <Grid container spacing={3} sx={{ marginBottom: 5 }}>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card
             sx={{
               display: "flex",
               alignItems: "center",
               backgroundColor: "#eb348f",
               color: "#fff",
+              height: 150,
               transition: "transform 0.3s ease-in-out",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -94,13 +97,14 @@ const LibrarianDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card
             sx={{
               display: "flex",
               alignItems: "center",
               backgroundColor: "#51a9ed",
               color: "#fff",
+              height: 150,
               transition: "transform 0.3s ease-in-out",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -116,13 +120,14 @@ const LibrarianDashboard = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card
             sx={{
               display: "flex",
               alignItems: "center",
               backgroundColor: "#75e354",
               color: "#fff",
+              height: 150,
               transition: "transform 0.3s ease-in-out",
               "&:hover": {
                 transform: "scale(1.05)",
@@ -135,6 +140,29 @@ const LibrarianDashboard = () => {
             <CardContent>
               <Typography variant="h6">Total E-books</Typography>
               <Typography variant="h4">{data.ebooks}</Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "#FF9800",
+              color: "#fff",
+              height: 150,
+              transition: "transform 0.3s ease-in-out",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
+            }}
+          >
+            <CardMedia>
+              <ImportContactsIcon sx={{ fontSize: 50, margin: 2 }} />
+            </CardMedia>
+            <CardContent>
+              <Typography variant="h6">Total Books Issued</Typography>
+              <Typography variant="h4">{data.totalBooksIssued}</Typography>
             </CardContent>
           </Card>
         </Grid>

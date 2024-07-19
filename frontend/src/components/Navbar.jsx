@@ -36,7 +36,7 @@ const Navbar = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: "#029cb0" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: "#029cb0" }}>
       <Toolbar>
         <Typography
           variant="h6"
