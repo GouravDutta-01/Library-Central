@@ -1,18 +1,26 @@
 body {
   margin: 0;
 }
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; 
+}
+.content {
+  flex: 1; 
+}
 ::-webkit-scrollbar{
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track{
-  background: rgb(3, 58, 58);
+  background: rgb(112, 189, 189);
 }
 ::-webkit-scrollbar-thumb{
-  background: rgb(15, 76, 109);
+  background: rgb(6, 109, 123);
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover{
-  background: rgb(6, 56, 92);
+  background: rgb(1, 74, 74);
 }
 

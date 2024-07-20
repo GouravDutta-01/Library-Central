@@ -11,6 +11,7 @@ import {
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 import MobileMenu from "./MobileMenu";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
 
 const Navbar = () => {
   const { role, logout } = useContext(AppContext);
@@ -28,26 +29,39 @@ const Navbar = () => {
   const getButtonStyle = (path) => {
     return currentPath === path
       ? {
-          background: "linear-gradient(to right, #0c174a, #1b394d)",
+          background: "linear-gradient(to right, #567ff5, #020a21)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
+          fontWeight: "bold",
+          transform: "scale(1.2)",
+          transition: "transform 0.2s",
         }
-      : {};
+      : {
+          color: "#2e4a6b",
+        };
   };
 
   return (
-    <AppBar position="sticky" sx={{ backgroundColor: "#029cb0" }}>
+    <AppBar position="sticky" sx={{ backgroundColor: "#a6dcef" }}>
       <Toolbar>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            flexGrow: 1,
-            whiteSpace: "nowrap",
-          }}
-        >
-          Library Management System
-        </Typography>
+        <MenuBookIcon sx={{ marginRight: 1, color: "#171b45" }} />
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              flexGrow: 1,
+              whiteSpace: "nowrap",
+              fontFamily: "Poppins, sans-serif",
+              fontWeight: 800,
+              background: "linear-gradient(to right, #567ff5, #020a21)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Library Central
+          </Typography>
+        </Link>
         {isMatch ? (
           <MobileMenu handleLogout={handleLogout} />
         ) : (

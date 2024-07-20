@@ -24,79 +24,83 @@ const App = () => {
   return (
     <AppProvider>
       <Router>
-        <ToastContainer position="top-center" autoClose={1000} />
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/librarian"
-            element={
-              <PrivateRoute role="librarian">
-                <LibrarianDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/user"
-            element={
-              <PrivateRoute role="user">
-                <UserDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/manage-sections"
-            element={
-              <PrivateRoute role="librarian">
-                <SectionManagement />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/manage-ebooks"
-            element={
-              <PrivateRoute role="librarian">
-                <EbookManagement />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/manage-requests"
-            element={
-              <PrivateRoute role="librarian">
-                <RequestManagement />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/manage-feedbacks"
-            element={
-              <PrivateRoute role="librarian">
-                <FeedbackManagement />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/available-books"
-            element={
-              <PrivateRoute role="user">
-                <AvailableBooks />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/search"
-            element={
-              <PrivateRoute role="user">
-                <Search />
-              </PrivateRoute>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Footer/>
+        <div className="main-container">
+          <Navbar />
+          <div className="content">
+            <ToastContainer position="top-center" autoClose={1000} />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route
+                path="/librarian"
+                element={
+                  <PrivateRoute role="librarian">
+                    <LibrarianDashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/user"
+                element={
+                  <PrivateRoute role="user">
+                    <UserDashboard />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/manage-sections"
+                element={
+                  <PrivateRoute role="librarian">
+                    <SectionManagement />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/manage-ebooks"
+                element={
+                  <PrivateRoute role="librarian">
+                    <EbookManagement />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/manage-requests"
+                element={
+                  <PrivateRoute role="librarian">
+                    <RequestManagement />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/manage-feedbacks"
+                element={
+                  <PrivateRoute role="librarian">
+                    <FeedbackManagement />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/available-books"
+                element={
+                  <PrivateRoute role="user">
+                    <AvailableBooks />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <PrivateRoute role="user">
+                    <Search />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
+        </div>
       </Router>
     </AppProvider>
   );
