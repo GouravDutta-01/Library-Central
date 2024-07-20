@@ -126,7 +126,6 @@ const RequestManagement = () => {
                 <TableRow>
                   <TableCell sx={{ fontWeight: "bold" }}>Book Name</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>User Name</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -137,7 +136,6 @@ const RequestManagement = () => {
                       {request.ebook?.name || "Unknown E-book"}
                     </TableCell>
                     <TableCell>{request.username}</TableCell>
-                    <TableCell>{request.status}</TableCell>
                     <TableCell>
                       <Button
                         onClick={() => handleRequest(request._id, "granted")}
