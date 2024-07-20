@@ -15,6 +15,7 @@ import {
   Grid,
   InputAdornment,
   IconButton,
+  Typography,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -89,122 +90,137 @@ const AvailableBooks = () => {
 
   return (
     <Container sx={{ paddingTop: 5 }}>
-      <Grid container spacing={2} sx={{ marginBottom: 3 }}>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="Search Book Name"
-            name="bookName"
-            value={searchCriteria.bookName}
-            onChange={handleSearchChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              endAdornment: searchCriteria.bookName && (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => handleClearSearch("bookName")}
-                    edge="end"
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              sx: { borderRadius: "20px" },
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="Search Author Name"
-            name="authorName"
-            value={searchCriteria.authorName}
-            onChange={handleSearchChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              endAdornment: searchCriteria.authorName && (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => handleClearSearch("authorName")}
-                    edge="end"
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              sx: { borderRadius: "20px" },
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField
-            label="Search Section Name"
-            name="sectionName"
-            value={searchCriteria.sectionName}
-            onChange={handleSearchChange}
-            fullWidth
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              endAdornment: searchCriteria.sectionName && (
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={() => handleClearSearch("sectionName")}
-                    edge="end"
-                  >
-                    <ClearIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              sx: { borderRadius: "20px" },
-            }}
-          />
-        </Grid>
-      </Grid>
-      <TableContainer
-        component={Paper}
-        sx={{ border: "1px solid #ccc", marginTop: 2, marginBottom: 10 }}
-      >
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>Book Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Author</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Section Name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredBooks.map((book) => (
-              <TableRow key={book._id}>
-                <TableCell>{book.name}</TableCell>
-                <TableCell>{book.authors.join(", ")}</TableCell>
-                <TableCell>{book.section?.name}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => requestBook(book._id)}
-                  >
-                    Request
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {books.length > 0 ? (
+        <>
+          <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Search Book Name"
+                name="bookName"
+                value={searchCriteria.bookName}
+                onChange={handleSearchChange}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchCriteria.bookName && (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => handleClearSearch("bookName")}
+                        edge="end"
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "20px" },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Search Author Name"
+                name="authorName"
+                value={searchCriteria.authorName}
+                onChange={handleSearchChange}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchCriteria.authorName && (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => handleClearSearch("authorName")}
+                        edge="end"
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "20px" },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Search Section Name"
+                name="sectionName"
+                value={searchCriteria.sectionName}
+                onChange={handleSearchChange}
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                  endAdornment: searchCriteria.sectionName && (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => handleClearSearch("sectionName")}
+                        edge="end"
+                      >
+                        <ClearIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: "20px" },
+                }}
+              />
+            </Grid>
+          </Grid>
+          <TableContainer
+            component={Paper}
+            sx={{ border: "1px solid #ccc", marginTop: 2, marginBottom: 10 }}
+          >
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: "bold" }}>Book Name</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Author</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    Section Name
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredBooks.map((book) => (
+                  <TableRow key={book._id}>
+                    <TableCell>{book.name}</TableCell>
+                    <TableCell>{book.authors.join(", ")}</TableCell>
+                    <TableCell>{book.section?.name}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => requestBook(book._id)}
+                      >
+                        Request
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      ) : (
+        <Typography
+          color="textSecondary"
+          variant="h6"
+          component="p"
+          gutterBottom
+        >
+          No eBooks available.
+        </Typography>
+      )}
     </Container>
   );
 };

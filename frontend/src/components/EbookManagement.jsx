@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { AppContext } from '../context/AppContext';
-import axios from 'axios';
+import React, { useState, useEffect, useContext } from "react";
+import { AppContext } from "../context/AppContext";
+import axios from "axios";
 import {
   Container,
   TextField,
@@ -14,27 +14,27 @@ import {
   TableRow,
   Paper,
   IconButton,
-  MenuItem
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { toast } from 'react-toastify';
+  MenuItem,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { toast } from "react-toastify";
 
 const EbookManagement = () => {
   const { token } = useContext(AppContext);
   const [ebooks, setEbooks] = useState([]);
   const [sections, setSections] = useState([]);
   const [newEbook, setNewEbook] = useState({
-    name: '',
-    content: '',
-    authors: '',
-    section: ''
+    name: "",
+    content: "",
+    authors: "",
+    section: "",
   });
 
   useEffect(() => {
     const fetchEbooks = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user/ebooks', {
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await axios.get("http://localhost:5000/api/user/ebooks", {
+          headers: { Authorization: `Bearer ${token}` },
         });
         setEbooks(res.data);
       } catch (err) {
@@ -44,8 +44,8 @@ const EbookManagement = () => {
 
     const fetchSections = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/user/sections', {
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await axios.get("http://localhost:5000/api/user/sections", {
+          headers: { Authorization: `Bearer ${token}` },
         });
         setSections(res.data);
       } catch (err) {
@@ -59,22 +59,22 @@ const EbookManagement = () => {
 
   const addEbook = async () => {
     try {
-      await axios.post('http://localhost:5000/api/librarian/ebooks', newEbook, {
-        headers: { Authorization: `Bearer ${token}` }
+      await axios.post("http://localhost:5000/api/librarian/ebooks", newEbook, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      toast.success('E-book added successfully');
-      const res = await axios.get('http://localhost:5000/api/user/ebooks', {
-        headers: { Authorization: `Bearer ${token}` }
+      toast.success("E-book added successfully");
+      const res = await axios.get("http://localhost:5000/api/user/ebooks", {
+        headers: { Authorization: `Bearer ${token}` },
       });
       setEbooks(res.data);
       setNewEbook({
-        name: '',
-        content: '',
-        authors: '',
-        section: ''
+        name: "",
+        content: "",
+        authors: "",
+        section: "",
       });
     } catch (err) {
-      const errorMessage = err.response?.data?.msg || 'Error adding E-book';
+      const errorMessage = err.response?.data?.msg || "Error adding E-book";
       console.error(err);
       toast.error(errorMessage);
     }
@@ -83,12 +83,12 @@ const EbookManagement = () => {
   const deleteEbook = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/api/librarian/ebooks/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setEbooks(ebooks.filter(ebook => ebook._id !== id));
-      toast.success('E-book deleted successfully');
+      setEbooks(ebooks.filter((ebook) => ebook._id !== id));
+      toast.success("E-book deleted successfully");
     } catch (err) {
-      const errorMessage = err.response?.data?.msg || 'Error deleting E-book';
+      const errorMessage = err.response?.data?.msg || "Error deleting E-book";
       console.error(err);
       toast.error(errorMessage);
     }
@@ -101,9 +101,6 @@ const EbookManagement = () => {
 
   return (
     <Container sx={{ paddingTop: 5 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Manage E-books
-      </Typography>
       <TextField
         label="E-book Name"
         name="name"
@@ -141,41 +138,63 @@ const EbookManagement = () => {
         fullWidth
         required
       >
-        {sections.map(section => (
+        {sections.map((section) => (
           <MenuItem key={section._id} value={section._id}>
             {section.name}
           </MenuItem>
         ))}
       </TextField>
-      <Button onClick={addEbook} variant="contained" color="primary" sx={{ marginBottom: 2 }}>
+      <Button
+        onClick={addEbook}
+        variant="contained"
+        color="primary"
+        sx={{ marginBottom: 2 }}
+      >
         Add E-book
       </Button>
-      <TableContainer component={Paper} sx={{ border: '1px solid #ccc', marginTop: 2, marginBottom: 10 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: 'bold' }}>E-book Name</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Authors</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Section</TableCell>
-              <TableCell sx={{ fontWeight: 'bold' }}>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {ebooks.map((ebook) => (
-              <TableRow key={ebook._id}>
-                <TableCell>{ebook.name}</TableCell>
-                <TableCell>{ebook.authors.join(', ')}</TableCell>
-                <TableCell>{ebook.section.name}</TableCell>
-                <TableCell>
-                  <IconButton color="error" onClick={() => deleteEbook(ebook._id)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+      {ebooks.length > 0 ? (
+        <TableContainer
+          component={Paper}
+          sx={{ border: "1px solid #ccc", marginTop: 2, marginBottom: 10 }}
+        >
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: "bold" }}>E-book Name</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Authors</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Section</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {ebooks.map((ebook) => (
+                <TableRow key={ebook._id}>
+                  <TableCell>{ebook.name}</TableCell>
+                  <TableCell>{ebook.authors.join(", ")}</TableCell>
+                  <TableCell>{ebook.section.name}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      color="error"
+                      onClick={() => deleteEbook(ebook._id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography
+          color="textSecondary"
+          variant="h6"
+          component="p"
+          gutterBottom
+        >
+          No e-books available.
+        </Typography>
+      )}
     </Container>
   );
 };
