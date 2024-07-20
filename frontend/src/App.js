@@ -15,7 +15,6 @@ import EbookManagement from "./components/EbookManagement";
 import RequestManagement from "./components/RequestManagement";
 import FeedbackManagement from "./components/FeedbackManagement";
 import AvailableBooks from "./components/AvailableBooks";
-import Search from "./components/Search";
 import NotFound from "./components/NotFound";
 import Footer from "./components/Footer";
 import "./index.css";
@@ -85,14 +84,6 @@ const App = () => {
                 element={
                   <PrivateRoute role="user">
                     <AvailableBooks />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/search"
-                element={
-                  <PrivateRoute role="user">
-                    <Search />
                   </PrivateRoute>
                 }
               />

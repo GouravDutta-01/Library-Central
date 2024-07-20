@@ -13,7 +13,6 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import RequestPageIcon from "@mui/icons-material/RequestPage";
 import FeedbackIcon from "@mui/icons-material/Feedback";
-import SearchIcon from "@mui/icons-material/Search";
 import LoginIcon from "@mui/icons-material/Login";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -83,19 +82,13 @@ const MobileMenu = ({ handleLogout }) => {
           )}
           {role === "user" && (
             <>
-              <ListItemButton onClick={() => handleMenuClick("/search")}>
-                <ListItemIcon>
-                  <SearchIcon />
-                </ListItemIcon>
-                <ListItemText>Search</ListItemText>
-              </ListItemButton>
               <ListItemButton
                 onClick={() => handleMenuClick("/available-books")}
               >
                 <ListItemIcon>
                   <LibraryBooksIcon />
                 </ListItemIcon>
-                <ListItemText>Search</ListItemText>
+                <ListItemText>Available Books</ListItemText>
               </ListItemButton>
             </>
           )}

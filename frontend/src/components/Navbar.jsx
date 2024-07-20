@@ -140,16 +140,6 @@ const Navbar = () => {
                   <Button
                     color="inherit"
                     component={Link}
-                    to="/search"
-                    sx={getButtonStyle("/search")}
-                  >
-                    Search
-                  </Button>
-                </Grid>
-                <Grid item>
-                  <Button
-                    color="inherit"
-                    component={Link}
                     to="/available-books"
                     sx={getButtonStyle("/available-books")}
                   >
