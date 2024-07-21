@@ -93,9 +93,6 @@ router.post('/ebooks/:id/request', auth, async (req, res) => {
         }
 
         let user = await User.findById(userId);
-        if (user.issuedBooks.length >= 5) {
-            return res.status(400).json({ msg: 'You have already requested 5 e-books' });
-        }
 
         const existingRequest = user.requestedBooks.find(
             request => request.ebook.toString() === ebook._id.toString()
@@ -103,6 +100,10 @@ router.post('/ebooks/:id/request', auth, async (req, res) => {
 
         if (existingRequest) {
             return res.status(400).json({ msg: 'You have already requested this e-book' });
+        }
+
+        if (user.requestedBooks.length >= 3) {
+            return res.status(400).json({ msg: 'You have already requested 3 e-books' });
         }
 
         user.requestedBooks.push({ ebook: ebook._id, status: 'pending' });
