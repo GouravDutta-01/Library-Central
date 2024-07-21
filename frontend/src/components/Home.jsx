@@ -80,6 +80,7 @@ const FeatureCard = styled(Card)({
   borderRadius: "16px",
   backgroundColor: "#a6dcef",
   color: "#0c174a",
+  cursor: "pointer",
   transition: "background-color 0.3s ease-in-out, color 0.3s ease-in-out",
   "&:hover": {
     backgroundColor: "#0c174a",

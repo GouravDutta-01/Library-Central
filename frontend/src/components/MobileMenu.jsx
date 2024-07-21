@@ -6,15 +6,18 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Box,
+  Typography,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 import HomeIcon from "@mui/icons-material/Home";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import RequestPageIcon from "@mui/icons-material/RequestPage";
 import FeedbackIcon from "@mui/icons-material/Feedback";
 import LoginIcon from "@mui/icons-material/Login";
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
@@ -34,11 +37,31 @@ const MobileMenu = ({ handleLogout }) => {
       <Drawer
         anchor="right"
         PaperProps={{
-          sx: { width: "50%" },
+          sx: {
+            width: "93%",
+            height: "auto",
+            backgroundColor: "#e3f2fd",
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.3)",
+            margin: "16px",
+            borderRadius: "8px",
+          },
         }}
         open={openMenu}
         onClose={() => setOpenMenu(false)}
       >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: 2,
+          }}
+        >
+          <Typography variant="h6">Menu</Typography>
+          <IconButton onClick={() => setOpenMenu(false)}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
         <List>
           <ListItemButton onClick={() => handleMenuClick("/")}>
             <ListItemIcon>
@@ -118,7 +141,7 @@ const MobileMenu = ({ handleLogout }) => {
         </List>
       </Drawer>
       <IconButton
-        sx={{ color: "white", marginLeft: "auto" }}
+        sx={{ color: "#171b45", marginLeft: "auto" }}
         onClick={() => setOpenMenu(!openMenu)}
       >
         <MenuIcon />
