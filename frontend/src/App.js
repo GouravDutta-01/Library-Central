@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AppProvider } from "./context/AppContext";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import LibrarianDashboard from "./components/LibrarianDashboard";
@@ -14,6 +14,7 @@ import SectionManagement from "./components/SectionManagement";
 import EbookManagement from "./components/EbookManagement";
 import RequestManagement from "./components/RequestManagement";
 import FeedbackManagement from "./components/FeedbackManagement";
+import EbookDetail from "./components/EbookDetail";
 import AvailableBooks from "./components/AvailableBooks";
 import NotFound from "./components/NotFound";
 import Footer from "./components/Footer";
@@ -76,6 +77,14 @@ const App = () => {
                 element={
                   <PrivateRoute role="librarian">
                     <FeedbackManagement />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/ebook/:id"
+                element={
+                  <PrivateRoute role="user">
+                    <EbookDetail />
                   </PrivateRoute>
                 }
               />

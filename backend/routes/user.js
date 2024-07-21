@@ -62,6 +62,29 @@ router.get('/issued-books', auth, async (req, res) => {
     }
 });
 
+// Get Ebook by ID
+router.get('/ebooks/:id', auth, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const ebookId = req.params.id;
+
+        const user = await User.findById(userId).populate('issuedBooks');
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
+        }
+
+        const issuedBook = user.issuedBooks.find(book => book._id.toString() === ebookId);
+        if (!issuedBook) {
+            return res.status(403).json({ msg: 'Access denied. This e-book is not assigned to you.' });
+        }
+
+        res.json(issuedBook);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+});
+
 // Search Sections and E-books
 router.get('/sections', auth, async (req, res) => {
     try {
@@ -102,8 +125,8 @@ router.post('/ebooks/:id/request', auth, async (req, res) => {
             return res.status(400).json({ msg: 'You have already requested this e-book' });
         }
 
-        if (user.requestedBooks.length >= 3) {
-            return res.status(400).json({ msg: 'You have already requested 3 e-books' });
+        if (user.requestedBooks.length >= 5) {
+            return res.status(400).json({ msg: 'You have already requested 5 e-books' });
         }
 
         user.requestedBooks.push({ ebook: ebook._id, status: 'pending' });
