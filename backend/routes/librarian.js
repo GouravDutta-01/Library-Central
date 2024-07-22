@@ -21,7 +21,7 @@ router.get('/dashboard', auth, librarianAuth, async (req, res) => {
         const sections = await Section.countDocuments();
         const ebooks = await Ebook.countDocuments();
 
-        const users = await User.find({}, 'username role');
+        const users = await User.find({}, 'username email role');
 
         const totalBooksIssued = await User.aggregate([
             { $unwind: "$issuedBooks" },

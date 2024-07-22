@@ -22,7 +22,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import BookIcon from "@mui/icons-material/Book";
 import ImportContactsIcon from "@mui/icons-material/ImportContacts";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const LibrarianDashboard = () => {
   const { token } = useContext(AppContext);
@@ -61,9 +61,9 @@ const LibrarianDashboard = () => {
         ...prevState,
         users: prevState.users.filter((user) => user._id !== id),
       }));
-      toast.success('User deleted successfully');
+      toast.success("User deleted successfully");
     } catch (err) {
-      const errorMessage = err.response?.data?.msg || 'Error deleting User';
+      const errorMessage = err.response?.data?.msg || "Error deleting User";
       console.error("Error deleting user", err);
       toast.error(errorMessage);
     }
@@ -168,11 +168,15 @@ const LibrarianDashboard = () => {
       <Typography variant="h6" gutterBottom sx={{ paddingTop: 5 }}>
         All Users
       </Typography>
-      <TableContainer component={Paper} sx={{ border: "1px solid #ccc", marginTop: 2, marginBottom: 10 }}>
+      <TableContainer
+        component={Paper}
+        sx={{ border: "1px solid #ccc", marginTop: 2, marginBottom: 10 }}
+      >
         <Table>
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: "bold" }}>Username</TableCell>
+              <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Role</TableCell>
               <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
             </TableRow>
@@ -181,6 +185,7 @@ const LibrarianDashboard = () => {
             {data.users.map((user) => (
               <TableRow key={user._id}>
                 <TableCell>{user.username}</TableCell>
+                <TableCell>{user.email}</TableCell>
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   <IconButton
