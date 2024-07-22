@@ -261,6 +261,10 @@ router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
                 return res.status(404).json({ msg: 'E-book not found' });
             }
 
+            if (ebook.issuedTo && ebook.issuedTo.toString() !== user._id.toString()) {
+                return res.status(400).json({ msg: 'E-book already assigned to another user' });
+            }
+
             ebook.issuedTo = user._id;
             ebook.dateIssued = new Date();
             ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); 
@@ -285,7 +289,6 @@ router.put('/requests/:id', auth, librarianAuth, async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 
 // Approve E-book Request
 router.post('/ebooks/:id/approve', auth, librarianAuth, async (req, res) => {
@@ -314,7 +317,7 @@ router.post('/ebooks/:id/approve', auth, librarianAuth, async (req, res) => {
         ebook.dateIssued = new Date();
         ebook.returnDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
 
-        user.issuedBooks.push(ebook._id); // This line needs to add the ebook to issuedBooks
+        user.issuedBooks.push(ebook._id); 
 
         await ebook.save();
         await user.save();

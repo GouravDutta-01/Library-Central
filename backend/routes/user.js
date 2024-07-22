@@ -109,13 +109,26 @@ router.get('/ebooks', auth, async (req, res) => {
 // Request E-book
 router.post('/ebooks/:id/request', auth, async (req, res) => {
     const userId = req.user.id;
+    
     try {
-        let ebook = await Ebook.findById(req.params.id);
+        const ebook = await Ebook.findById(req.params.id);
+        
         if (!ebook) {
             return res.status(404).json({ msg: 'E-book not found' });
         }
 
-        let user = await User.findById(userId);
+        if (ebook.issuedTo && ebook.issuedTo.toString() !== userId) {
+            return res.status(400).json({ msg: 'Book is already assigned to another user, Please try again later' });
+        }
+
+        const user = await User.findById(userId);
+        const isAlreadyAssigned = user.issuedBooks.some(
+            issuedBook => issuedBook.toString() === ebook._id.toString()
+        );
+        
+        if (isAlreadyAssigned) {
+            return res.status(400).json({ msg: 'Book is already assigned to you' });
+        }
 
         const existingRequest = user.requestedBooks.find(
             request => request.ebook.toString() === ebook._id.toString()
