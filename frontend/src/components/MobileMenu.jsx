@@ -20,6 +20,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext";
 
@@ -125,6 +126,12 @@ const MobileMenu = ({ handleLogout }) => {
                   <LibraryBooksIcon />
                 </ListItemIcon>
                 <ListItemText>Available Books</ListItemText>
+              </ListItemButton>
+              <ListItemButton onClick={() => handleMenuClick("/profile")}>
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText>Profile</ListItemText>
               </ListItemButton>
             </>
           )}

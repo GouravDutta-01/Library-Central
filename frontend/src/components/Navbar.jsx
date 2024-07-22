@@ -23,7 +23,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
+    navigate("/login");
   };
 
   const getButtonStyle = (path) => {
@@ -144,6 +144,16 @@ const Navbar = () => {
                     sx={getButtonStyle("/available-books")}
                   >
                     Available Books
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    color="inherit"
+                    component={Link}
+                    to="/profile"
+                    sx={getButtonStyle("/profile")}
+                  >
+                    My Profile
                   </Button>
                 </Grid>
               </>

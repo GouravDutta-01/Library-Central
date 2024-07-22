@@ -16,6 +16,7 @@ import RequestManagement from "./components/RequestManagement";
 import FeedbackManagement from "./components/FeedbackManagement";
 import EbookDetail from "./components/EbookDetail";
 import AvailableBooks from "./components/AvailableBooks";
+import UserProfile from "./components/UserProfile";
 import NotFound from "./components/NotFound";
 import Footer from "./components/Footer";
 import "./index.css";
@@ -93,6 +94,14 @@ const App = () => {
                 element={
                   <PrivateRoute role="user">
                     <AvailableBooks />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <PrivateRoute role="user">
+                    <UserProfile />
                   </PrivateRoute>
                 }
               />
