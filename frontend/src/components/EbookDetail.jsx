@@ -79,7 +79,7 @@ const EbookDetail = () => {
   }
 
   return (
-    <Container sx={{ paddingTop: 5 }}>
+    <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
       <Box
         sx={{
           padding: 4,

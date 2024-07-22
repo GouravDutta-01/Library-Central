@@ -12,6 +12,7 @@ import {
   TableRow,
   Paper,
   Button,
+  Box,
 } from "@mui/material";
 import { toast } from "react-toastify";
 
@@ -125,7 +126,7 @@ const RequestManagement = () => {
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ fontWeight: "bold" }}>Book Name</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>User Name</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Username</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
                 </TableRow>
               </TableHead>
@@ -137,21 +138,22 @@ const RequestManagement = () => {
                     </TableCell>
                     <TableCell>{request.username}</TableCell>
                     <TableCell>
-                      <Button
-                        onClick={() => handleRequest(request._id, "granted")}
-                        sx={{ marginRight: 2 }}
-                        variant="contained"
-                        color="primary"
-                      >
-                        Grant
-                      </Button>
-                      <Button
-                        onClick={() => handleRequest(request._id, "rejected")}
-                        variant="contained"
-                        color="secondary"
-                      >
-                        Reject
-                      </Button>
+                      <Box sx={{ display: "flex", flexDirection: "row", gap: 1 }}>
+                        <Button
+                          onClick={() => handleRequest(request._id, "granted")}
+                          variant="contained"
+                          color="primary"
+                        >
+                          Grant
+                        </Button>
+                        <Button
+                          onClick={() => handleRequest(request._id, "rejected")}
+                          variant="contained"
+                          color="secondary"
+                        >
+                          Reject
+                        </Button>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -182,8 +184,7 @@ const RequestManagement = () => {
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ fontWeight: "bold" }}>Book Name</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>User Name</TableCell>
-                  <TableCell sx={{ fontWeight: "bold" }}>Date Issued</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>Username</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Return Date</TableCell>
                   <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
                 </TableRow>
@@ -193,9 +194,6 @@ const RequestManagement = () => {
                   <TableRow key={request._id}>
                     <TableCell>{request.ebook.name}</TableCell>
                     <TableCell>{request.username}</TableCell>
-                    <TableCell>
-                      {new Date(request.dateIssued).toLocaleDateString()}
-                    </TableCell>
                     <TableCell>
                       {new Date(request.returnDate).toLocaleDateString()}
                     </TableCell>
@@ -220,7 +218,7 @@ const RequestManagement = () => {
           variant="h6"
           component="p"
           gutterBottom
-          sx={{marginBottom: 4}}
+          sx={{ marginBottom: 4 }}
         >
           No active granted requests.
         </Typography>
