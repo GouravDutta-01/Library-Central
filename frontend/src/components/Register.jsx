@@ -9,13 +9,14 @@ import LoginIcon from '@mui/icons-material/Login';
 const Register = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
     const { dispatch } = useContext(AppContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/register', { username, password });
+            const res = await axios.post('http://localhost:5000/api/auth/register', { username, password, email });
             dispatch({
                 type: 'LOGIN_SUCCESS',
                 payload: { token: res.data.token, role: 'user' },
@@ -38,6 +39,7 @@ const Register = () => {
                     justifyContent={"center"}
                     margin={"auto"}
                     marginTop={5}
+                    marginBottom={5}
                     padding={3}
                     borderRadius={5}
                     boxShadow={"5px 5px 10px #ccc"}
@@ -62,6 +64,16 @@ const Register = () => {
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        margin="normal"
+                        type={"email"}
+                        variant="outlined"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         fullWidth
                         required
                     />

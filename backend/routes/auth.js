@@ -10,7 +10,8 @@ router.post(
     '/register',
     [
         check('username', 'Username is required').not().isEmpty(),
-        check('password', 'Password is required').isLength({ min: 6 })
+        check('password', 'Password is required').isLength({ min: 6 }),
+        check('email', 'Please include a valid email').isEmail()
     ],
     async (req, res) => {
         const errors = validationResult(req);
@@ -18,7 +19,7 @@ router.post(
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { username, password } = req.body;
+        const { username, password, email } = req.body;
 
         try {
             let user = await User.findOne({ username });
@@ -30,6 +31,7 @@ router.post(
             user = new User({
                 username,
                 password,
+                email,
                 role: 'user'
             });
 

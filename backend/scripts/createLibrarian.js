@@ -14,11 +14,12 @@ const createLibrarian = async () => {
             return;
         }
 
-        const { DEFAULT_LIBRARIAN_USERNAME, DEFAULT_LIBRARIAN_PASSWORD } = process.env;
+        const { DEFAULT_LIBRARIAN_USERNAME, DEFAULT_LIBRARIAN_PASSWORD, DEFAULT_LIBRARIAN_EMAIL } = process.env;
 
         const librarian = new User({
             username: DEFAULT_LIBRARIAN_USERNAME,
             password: DEFAULT_LIBRARIAN_PASSWORD,
+            email: DEFAULT_LIBRARIAN_EMAIL,
             role: 'librarian'
         });
 

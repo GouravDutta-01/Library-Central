@@ -220,6 +220,7 @@ const RequestManagement = () => {
           variant="h6"
           component="p"
           gutterBottom
+          sx={{marginBottom: 4}}
         >
           No active granted requests.
         </Typography>
