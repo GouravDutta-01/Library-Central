@@ -215,7 +215,7 @@ const SectionManagement = () => {
             p: 4,
           }}
         >
-          <Typography variant="h6" component="h2" gutterBottom>
+          <Typography sx={{ marginBottom: 2 }} variant="h6" component="h2" gutterBottom>
             Edit Section
           </Typography>
           <TextField

@@ -393,7 +393,7 @@ const EbookManagement = () => {
             p: 4,
           }}
         >
-          <Typography variant="h6" component="h2">
+          <Typography sx={{ marginBottom: 2 }} variant="h6" component="h2">
             Edit E-book
           </Typography>
           <TextField
