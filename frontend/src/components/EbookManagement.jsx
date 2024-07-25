@@ -15,8 +15,12 @@ import {
   Paper,
   IconButton,
   MenuItem,
+  Grid,
+  InputAdornment,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import SearchIcon from "@mui/icons-material/Search";
+import ClearIcon from "@mui/icons-material/Clear";
 import { toast } from "react-toastify";
 
 const EbookManagement = () => {
@@ -29,6 +33,12 @@ const EbookManagement = () => {
     authors: "",
     section: "",
   });
+  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [searchCriteria, setSearchCriteria] = useState({
+    bookName: "",
+    authorName: "",
+    sectionName: "",
+  });
 
   useEffect(() => {
     const fetchEbooks = async () => {
@@ -37,6 +47,7 @@ const EbookManagement = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         setEbooks(res.data);
+        setFilteredBooks(res.data);
       } catch (err) {
         console.error(err);
       }
@@ -57,6 +68,31 @@ const EbookManagement = () => {
     fetchSections();
   }, [token]);
 
+  useEffect(() => {
+    const { bookName, authorName, sectionName } = searchCriteria;
+    const filtered = ebooks.filter(
+      (book) =>
+        (bookName === "" ||
+          book.name.toLowerCase().includes(bookName.toLowerCase())) &&
+        (authorName === "" ||
+          book.authors.some((author) =>
+            author.toLowerCase().includes(authorName.toLowerCase())
+          )) &&
+        (sectionName === "" ||
+          book.section?.name.toLowerCase().includes(sectionName.toLowerCase()))
+    );
+    setFilteredBooks(filtered);
+  }, [searchCriteria, ebooks]);
+
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target;
+    setSearchCriteria((prevState) => ({ ...prevState, [name]: value }));
+  };
+
+  const handleClearSearch = (field) => {
+    setSearchCriteria((prevState) => ({ ...prevState, [field]: "" }));
+  };
+
   const addEbook = async () => {
     try {
       await axios.post("http://localhost:5000/api/librarian/ebooks", newEbook, {
@@ -67,6 +103,7 @@ const EbookManagement = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEbooks(res.data);
+      setFilteredBooks(res.data);
       setNewEbook({
         name: "",
         content: "",
@@ -92,6 +129,7 @@ const EbookManagement = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEbooks(ebooks.filter((ebook) => ebook._id !== id));
+      setFilteredBooks(filteredBooks.filter((ebook) => ebook._id !== id));
       toast.success("E-book deleted successfully");
     } catch (err) {
       const errorMessage = err.response?.data?.msg || "Error deleting E-book";
@@ -154,11 +192,94 @@ const EbookManagement = () => {
         onClick={addEbook}
         variant="contained"
         color="primary"
-        sx={{ marginBottom: 2 }}
+        sx={{ marginBottom: 5 }}
       >
         Add E-book
       </Button>
-      {ebooks.length > 0 ? (
+      <Grid container spacing={2} sx={{ marginBottom: 3 }}>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            label="Search Book Name"
+            name="bookName"
+            value={searchCriteria.bookName}
+            onChange={handleSearchChange}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: searchCriteria.bookName && (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => handleClearSearch("bookName")}
+                    edge="end"
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              sx: { borderRadius: "20px" },
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            label="Search Author Name"
+            name="authorName"
+            value={searchCriteria.authorName}
+            onChange={handleSearchChange}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: searchCriteria.authorName && (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => handleClearSearch("authorName")}
+                    edge="end"
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              sx: { borderRadius: "20px" },
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <TextField
+            label="Search Section Name"
+            name="sectionName"
+            value={searchCriteria.sectionName}
+            onChange={handleSearchChange}
+            fullWidth
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+              endAdornment: searchCriteria.sectionName && (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => handleClearSearch("sectionName")}
+                    edge="end"
+                  >
+                    <ClearIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+              sx: { borderRadius: "20px" },
+            }}
+          />
+        </Grid>
+      </Grid>
+      {filteredBooks.length > 0 ? (
         <TableContainer
           component={Paper}
           sx={{ border: "1px solid #ccc", marginTop: 2, marginBottom: 10 }}
@@ -169,19 +290,19 @@ const EbookManagement = () => {
                 <TableCell sx={{ fontWeight: "bold" }}>E-book Name</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Authors</TableCell>
                 <TableCell sx={{ fontWeight: "bold" }}>Section</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {ebooks.map((ebook) => (
+              {filteredBooks.map((ebook) => (
                 <TableRow key={ebook._id}>
                   <TableCell>{ebook.name}</TableCell>
                   <TableCell>{ebook.authors.join(", ")}</TableCell>
-                  <TableCell>{ebook.section.name}</TableCell>
+                  <TableCell>{ebook.section?.name}</TableCell>
                   <TableCell>
                     <IconButton
-                      color="error"
                       onClick={() => deleteEbook(ebook._id)}
+                      color="error"
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -192,13 +313,8 @@ const EbookManagement = () => {
           </Table>
         </TableContainer>
       ) : (
-        <Typography
-          color="textSecondary"
-          variant="h6"
-          component="p"
-          gutterBottom
-        >
-          No e-books available.
+        <Typography variant="body1" sx={{ marginTop: 2 }}>
+          No E-books found.
         </Typography>
       )}
     </Container>
