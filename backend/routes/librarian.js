@@ -147,6 +147,11 @@ router.post('/ebooks', auth, librarianAuth, async (req, res) => {
             return res.status(400).json({ msg: 'Section does not exist' });
         }
 
+        let ebookExists = await Ebook.findOne({ name });
+        if (ebookExists) {
+            return res.status(400).json({ msg: 'An e-book with the same name already exists' });
+        }
+
         let ebook = new Ebook({
             name,
             content,

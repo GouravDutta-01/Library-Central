@@ -77,6 +77,12 @@ const EbookManagement = () => {
       const errorMessage = err.response?.data?.msg || "Error adding E-book";
       console.error(err);
       toast.error(errorMessage);
+      setNewEbook({
+        name: "",
+        content: "",
+        authors: "",
+        section: "",
+      });
     }
   };
 
