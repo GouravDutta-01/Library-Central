@@ -17,8 +17,11 @@ import {
   MenuItem,
   Grid,
   InputAdornment,
+  Modal,
+  Box,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
 import { toast } from "react-toastify";
@@ -33,6 +36,8 @@ const EbookManagement = () => {
     authors: "",
     section: "",
   });
+  const [editEbook, setEditEbook] = useState(null);
+  const [open, setOpen] = useState(false);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchCriteria, setSearchCriteria] = useState({
     bookName: "",
@@ -132,9 +137,67 @@ const EbookManagement = () => {
     }
   };
 
+  const updateEbook = async () => {
+    try {
+      const res = await axios.put(
+        `http://localhost:5000/api/librarian/ebooks/${editEbook._id}`,
+        editEbook,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      const updatedEbook = res.data;
+  
+      const updatedEbookWithSection = {
+        ...updatedEbook,
+        section: sections.find(section => section._id === updatedEbook.section) || editEbook.section
+      };
+  
+      setEbooks(
+        ebooks.map((ebook) =>
+          ebook._id === editEbook._id ? updatedEbookWithSection : ebook
+        )
+      );
+      setFilteredBooks(
+        filteredBooks.map((ebook) =>
+          ebook._id === editEbook._id ? updatedEbookWithSection : ebook
+        )
+      );
+      setEditEbook(null);
+      setOpen(false);
+      toast.success("E-book updated successfully");
+    } catch (err) {
+      const errorMessage = err.response?.data?.msg || "Error updating E-book";
+      console.error(err);
+      toast.error(errorMessage);
+    }
+  };
+  
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewEbook({ ...newEbook, [name]: value });
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditEbook((prevState) => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleEditOpen = (ebook) => {
+    setEditEbook({
+      ...ebook,
+      section: ebook.section?._id || "" 
+    });
+    setOpen(true);
+  };
+
+  const handleEditClose = () => {
+    setEditEbook(null);
+    setOpen(false);
   };
 
   return (
@@ -295,6 +358,12 @@ const EbookManagement = () => {
                   <TableCell>{ebook.section?.name}</TableCell>
                   <TableCell>
                     <IconButton
+                      onClick={() => handleEditOpen(ebook)}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
                       onClick={() => deleteEbook(ebook._id)}
                       color="error"
                     >
@@ -311,6 +380,78 @@ const EbookManagement = () => {
           No E-books found.
         </Typography>
       )}
+      <Modal open={open} onClose={handleEditClose}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography variant="h6" component="h2">
+            Edit E-book
+          </Typography>
+          <TextField
+            label="E-book Name"
+            name="name"
+            value={editEbook?.name || ""}
+            onChange={handleEditChange}
+            sx={{ marginBottom: 2 }}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Content"
+            name="content"
+            value={editEbook?.content || ""}
+            onChange={handleEditChange}
+            sx={{ marginBottom: 2 }}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Authors (comma separated)"
+            name="authors"
+            value={editEbook?.authors || ""}
+            onChange={handleEditChange}
+            sx={{ marginBottom: 2 }}
+            fullWidth
+            required
+          />
+          <TextField
+            select
+            label="Section"
+            name="section"
+            value={editEbook?.section || ""}
+            onChange={handleEditChange}
+            sx={{ marginBottom: 2 }}
+            fullWidth
+            required
+          >
+            {sections.map((section) => (
+              <MenuItem key={section._id} value={section._id}>
+                {section.name}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Button
+            onClick={updateEbook}
+            variant="contained"
+            color="primary"
+            sx={{ marginRight: 2 }}
+          >
+            Save
+          </Button>
+          <Button onClick={handleEditClose} variant="contained" color="secondary">
+            Cancel
+          </Button>
+        </Box>
+      </Modal>
     </Container>
   );
 };
