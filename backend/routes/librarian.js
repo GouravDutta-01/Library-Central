@@ -75,8 +75,10 @@ router.delete('/user/:id', auth, librarianAuth, async (req, res) => {
 // Section Management
 router.post('/sections', auth, librarianAuth, async (req, res) => {
     const { name, description } = req.body;
+    if (!name || !description) {
+        return res.status(400).json({ msg: 'Please enter all fields' });
+    }
     try {
-        // Check if section with the same name already exists
         let existingSection = await Section.findOne({ name });
         if (existingSection) {
             return res.status(400).json({ msg: 'Section already exists' });
@@ -114,7 +116,6 @@ router.put('/sections/:id', auth, librarianAuth, async (req, res) => {
 
 router.delete('/sections/:id', auth, librarianAuth, async (req, res) => {
     try {
-        // Check if the provided ID is a valid ObjectId
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             return res.status(400).json({ msg: 'Invalid section ID' });
         }
@@ -124,7 +125,6 @@ router.delete('/sections/:id', auth, librarianAuth, async (req, res) => {
             return res.status(404).json({ msg: 'Section not found' });
         }
 
-        // Check for related ebooks and handle them
         const relatedEbooks = await Ebook.find({ section: req.params.id });
         if (relatedEbooks.length > 0) {
             return res.status(400).json({ msg: 'Section has related ebooks' });
@@ -141,6 +141,9 @@ router.delete('/sections/:id', auth, librarianAuth, async (req, res) => {
 // E-book Management
 router.post('/ebooks', auth, librarianAuth, async (req, res) => {
     const { name, content, authors, section } = req.body;
+    if (!name || !content || !authors || !section) {
+        return res.status(400).json({ msg: 'Please enter all fields' });
+    }
     try {
         let sectionExists = await Section.findById(section);
         if (!sectionExists) {

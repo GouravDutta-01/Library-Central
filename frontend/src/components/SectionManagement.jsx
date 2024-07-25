@@ -57,7 +57,6 @@ const SectionManagement = () => {
       const errorMessage = err.response?.data?.msg || "Error adding Section";
       console.error(err);
       toast.error(errorMessage);
-      setNewSection({ name: "", description: "" });
     }
   };
 
