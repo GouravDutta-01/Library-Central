@@ -19,7 +19,6 @@ import { toast } from "react-toastify";
 const RequestManagement = () => {
   const { token } = useContext(AppContext);
   const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -33,9 +32,7 @@ const RequestManagement = () => {
         setRequests(res.data);
       } catch (err) {
         console.error(err);
-        toast.error("Failed to fetch requests");
       } finally {
-        setLoading(false);
       }
     };
     fetchRequests();
@@ -99,10 +96,6 @@ const RequestManagement = () => {
       toast.error(errorMessage);
     }
   };
-
-  if (loading) {
-    return <Typography>Loading...</Typography>;
-  }
 
   const pendingRequests = requests.filter(
     (request) => request.status === "pending"
