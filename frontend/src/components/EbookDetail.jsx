@@ -168,15 +168,22 @@ const EbookDetail = () => {
             fullWidth
             multiline
             rows={4}
-            sx={{ mt: 2 }}
+            sx={{ mt: 2, mb: 2 }}
           />
           <Button
             onClick={handleSubmitFeedback}
             variant="contained"
-            sx={{ mt: 2 }}
+            sx={{ mr: 1 }}
           >
             Submit
           </Button>
+          <Button
+              onClick={handleFeedbackClose}
+              variant="contained"
+              color="secondary"
+            >
+              Close
+            </Button>
         </Box>
       </Modal>
     </Container>

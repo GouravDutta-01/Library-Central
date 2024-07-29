@@ -68,21 +68,21 @@ const Register = () => {
           />
           <TextField
             margin="normal"
-            type={"password"}
-            variant="outlined"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            fullWidth
-            required
-          />
-          <TextField
-            margin="normal"
             type={"email"}
             variant="outlined"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            required
+          />
+          <TextField
+            margin="normal"
+            type={"password"}
+            variant="outlined"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             fullWidth
             required
           />

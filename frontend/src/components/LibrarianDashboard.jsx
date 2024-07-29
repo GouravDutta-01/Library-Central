@@ -16,6 +16,12 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PeopleIcon from "@mui/icons-material/People";
@@ -33,6 +39,8 @@ const LibrarianDashboard = () => {
     totalBooksIssued: 0,
     users: [],
   });
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,16 +60,30 @@ const LibrarianDashboard = () => {
     fetchData();
   }, [token]);
 
-  const deleteUser = async (id) => {
+  const handleDeleteClick = (user) => {
+    setSelectedUser(user);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/librarian/user/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `http://localhost:5000/api/librarian/user/${selectedUser._id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setData((prevState) => ({
         ...prevState,
-        users: prevState.users.filter((user) => user._id !== id),
+        users: prevState.users.filter((user) => user._id !== selectedUser._id),
       }));
       toast.success("User deleted successfully");
+      handleClose();
     } catch (err) {
       const errorMessage = err.response?.data?.msg || "Error deleting User";
       console.error("Error deleting user", err);
@@ -190,7 +212,7 @@ const LibrarianDashboard = () => {
                 <TableCell>
                   <IconButton
                     color="error"
-                    onClick={() => deleteUser(user._id)}
+                    onClick={() => handleDeleteClick(user)}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -200,6 +222,30 @@ const LibrarianDashboard = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete User"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this user?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

@@ -12,6 +12,12 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
@@ -19,6 +25,8 @@ import { toast } from "react-toastify";
 const FeedbackManagement = () => {
   const { token } = useContext(AppContext);
   const [feedbacks, setFeedbacks] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
@@ -37,16 +45,27 @@ const FeedbackManagement = () => {
     fetchFeedbacks();
   }, [token]);
 
-  const deleteFeedback = async (id) => {
+  const handleDeleteClick = (feedback) => {
+    setSelectedFeedback(feedback);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedFeedback(null);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/librarian/feedbacks/${id}`,
+        `http://localhost:5000/api/librarian/feedbacks/${selectedFeedback._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setFeedbacks(feedbacks.filter((feedback) => feedback._id !== id));
+      setFeedbacks(feedbacks.filter((feedback) => feedback._id !== selectedFeedback._id));
       toast.success("Feedback deleted successfully");
+      handleClose();
     } catch (err) {
       console.error(err);
       toast.error("Error deleting feedback");
@@ -80,7 +99,7 @@ const FeedbackManagement = () => {
                   <TableCell>
                     <IconButton
                       color="error"
-                      onClick={() => deleteFeedback(feedback._id)}
+                      onClick={() => handleDeleteClick(feedback)}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -100,6 +119,28 @@ const FeedbackManagement = () => {
           No feedback available.
         </Typography>
       )}
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Feedback"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this feedback?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
