@@ -19,6 +19,11 @@ import {
   InputAdornment,
   Modal,
   Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -38,6 +43,8 @@ const EbookManagement = () => {
   });
   const [editEbook, setEditEbook] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedEbook, setSelectedEbook] = useState(null);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchCriteria, setSearchCriteria] = useState({
     bookName: "",
@@ -122,19 +129,35 @@ const EbookManagement = () => {
     }
   };
 
-  const deleteEbook = async (id) => {
+  const handleDeleteClick = (ebook) => {
+    setSelectedEbook(ebook);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/librarian/ebooks/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setEbooks(ebooks.filter((ebook) => ebook._id !== id));
-      setFilteredBooks(filteredBooks.filter((ebook) => ebook._id !== id));
+      await axios.delete(
+        `http://localhost:5000/api/librarian/ebooks/${selectedEbook._id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setEbooks(ebooks.filter((ebook) => ebook._id !== selectedEbook._id));
+      setFilteredBooks(
+        filteredBooks.filter((ebook) => ebook._id !== selectedEbook._id)
+      );
       toast.success("E-book deleted successfully");
+      handleCloseDialog();
     } catch (err) {
       const errorMessage = err.response?.data?.msg || "Error deleting E-book";
       console.error(err);
       toast.error(errorMessage);
     }
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedEbook(null);
   };
 
   const updateEbook = async () => {
@@ -172,7 +195,6 @@ const EbookManagement = () => {
       toast.error(errorMessage);
     }
   };
-  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -183,14 +205,14 @@ const EbookManagement = () => {
     const { name, value } = e.target;
     setEditEbook((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleEditOpen = (ebook) => {
     setEditEbook({
       ...ebook,
-      section: ebook.section?._id || "" 
+      section: ebook.section?._id || "", // assuming section is an object with an _id property
     });
     setOpen(true);
   };
@@ -364,7 +386,7 @@ const EbookManagement = () => {
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      onClick={() => deleteEbook(ebook._id)}
+                      onClick={() => handleDeleteClick(ebook)}
                       color="error"
                     >
                       <DeleteIcon />
@@ -452,6 +474,27 @@ const EbookManagement = () => {
           </Button>
         </Box>
       </Modal>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this ebook ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

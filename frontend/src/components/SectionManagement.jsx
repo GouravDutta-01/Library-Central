@@ -16,6 +16,11 @@ import {
   IconButton,
   Modal,
   Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -30,6 +35,8 @@ const SectionManagement = () => {
   });
   const [editSection, setEditSection] = useState(null);
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedSection, setSelectedSection] = useState(null);
 
   useEffect(() => {
     const fetchSections = async () => {
@@ -65,18 +72,32 @@ const SectionManagement = () => {
     }
   };
 
-  const deleteSection = async (id) => {
+  const handleDeleteClick = (section) => {
+    setSelectedSection(section);
+    setOpenDialog(true);
+  };
+
+  const handleDeleteConfirm = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/librarian/sections/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSections(sections.filter((section) => section._id !== id));
+      await axios.delete(
+        `http://localhost:5000/api/librarian/sections/${selectedSection._id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setSections(sections.filter((section) => section._id !== selectedSection._id));
       toast.success("Section deleted successfully");
+      handleCloseDialog();
     } catch (err) {
       const errorMessage = err.response?.data?.msg || "Error deleting Section";
       console.error(err);
       toast.error(errorMessage);
     }
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedSection(null);
   };
 
   const updateSection = async () => {
@@ -181,7 +202,7 @@ const SectionManagement = () => {
                     </IconButton>
                     <IconButton
                       color="error"
-                      onClick={() => deleteSection(section._id)}
+                      onClick={() => handleDeleteClick(section)}
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -201,6 +222,7 @@ const SectionManagement = () => {
           No sections available.
         </Typography>
       )}
+
       <Modal open={open} onClose={handleEditClose}>
         <Box
           sx={{
@@ -248,6 +270,28 @@ const SectionManagement = () => {
           </Button>
         </Box>
       </Modal>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="confirm-delete-dialog"
+        aria-describedby="confirm-delete-description"
+      >
+        <DialogTitle id="confirm-delete-dialog">{"Delete Section"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="confirm-delete-description">
+            Are you sure you want to delete this section? 
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
