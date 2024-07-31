@@ -29,6 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SearchIcon from "@mui/icons-material/Search";
 import ClearIcon from "@mui/icons-material/Clear";
+import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 
 const EbookManagement = () => {
@@ -170,12 +171,14 @@ const EbookManagement = () => {
         }
       );
       const updatedEbook = res.data;
-  
+
       const updatedEbookWithSection = {
         ...updatedEbook,
-        section: sections.find(section => section._id === updatedEbook.section) || editEbook.section
+        section:
+          sections.find((section) => section._id === updatedEbook.section) ||
+          editEbook.section,
       };
-  
+
       setEbooks(
         ebooks.map((ebook) =>
           ebook._id === editEbook._id ? updatedEbookWithSection : ebook
@@ -212,7 +215,7 @@ const EbookManagement = () => {
   const handleEditOpen = (ebook) => {
     setEditEbook({
       ...ebook,
-      section: ebook.section?._id || "", // assuming section is an object with an _id property
+      section: ebook.section?._id || "", 
     });
     setOpen(true);
   };
@@ -415,6 +418,18 @@ const EbookManagement = () => {
             p: 4,
           }}
         >
+          <IconButton
+            aria-label="close"
+            onClick={handleEditClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
           <Typography sx={{ marginBottom: 2 }} variant="h6" component="h2">
             Edit E-book
           </Typography>
@@ -469,7 +484,11 @@ const EbookManagement = () => {
           >
             Save
           </Button>
-          <Button onClick={handleEditClose} variant="contained" color="secondary">
+          <Button
+            onClick={handleEditClose}
+            variant="contained"
+            color="secondary"
+          >
             Cancel
           </Button>
         </Box>

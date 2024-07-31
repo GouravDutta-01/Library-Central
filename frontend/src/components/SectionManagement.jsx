@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 import { toast } from "react-toastify";
 
 const SectionManagement = () => {
@@ -85,7 +86,9 @@ const SectionManagement = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setSections(sections.filter((section) => section._id !== selectedSection._id));
+      setSections(
+        sections.filter((section) => section._id !== selectedSection._id)
+      );
       toast.success("Section deleted successfully");
       handleCloseDialog();
     } catch (err) {
@@ -237,7 +240,24 @@ const SectionManagement = () => {
             p: 4,
           }}
         >
-          <Typography sx={{ marginBottom: 2 }} variant="h6" component="h2" gutterBottom>
+          <IconButton
+            aria-label="close"
+            onClick={handleEditClose}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography
+            sx={{ marginBottom: 2 }}
+            variant="h6"
+            component="h2"
+            gutterBottom
+          >
             Edit Section
           </Typography>
           <TextField
@@ -265,7 +285,11 @@ const SectionManagement = () => {
           >
             Save
           </Button>
-          <Button onClick={handleEditClose} variant="contained" color="secondary">
+          <Button
+            onClick={handleEditClose}
+            variant="contained"
+            color="secondary"
+          >
             Cancel
           </Button>
         </Box>
@@ -280,7 +304,7 @@ const SectionManagement = () => {
         <DialogTitle id="confirm-delete-dialog">{"Delete Section"}</DialogTitle>
         <DialogContent>
           <DialogContentText id="confirm-delete-description">
-            Are you sure you want to delete this section? 
+            Are you sure you want to delete this section?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
