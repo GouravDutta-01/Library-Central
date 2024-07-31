@@ -7,6 +7,11 @@ import {
   Paper,
   Grid,
   Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -21,6 +26,7 @@ const UserProfile = () => {
     password: "",
   });
   const [editMode, setEditMode] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -71,6 +77,19 @@ const UserProfile = () => {
       console.error(error);
       toast.error(errorMessage);
     }
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleDeleteConfirm = () => {
+    handleDelete();
+    handleCloseDialog();
   };
 
   return (
@@ -141,12 +160,33 @@ const UserProfile = () => {
             >
               Edit
             </Button>
-            <Button variant="outlined" color="error" onClick={handleDelete}>
+            <Button variant="outlined" color="error" onClick={handleOpenDialog}>
               Delete Account
             </Button>
           </>
         )}
       </Box>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Delete"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete your account? 
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

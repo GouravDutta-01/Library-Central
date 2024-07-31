@@ -136,7 +136,7 @@ const FeedbackManagement = () => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleDeleteConfirm} color="primary" autoFocus>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
             Confirm
           </Button>
         </DialogActions>
