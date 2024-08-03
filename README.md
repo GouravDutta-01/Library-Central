@@ -1,10 +1,15 @@
 # Library-Central
 
-**Library-Central** is a multi-user library management system built with the MERN stack (MongoDB, Express.js, React.js, Node.js). It enables librarians to maintain sections and e-books while allowing users to browse, request, and manage e-books. The platform functions like an online library, facilitating the issuing, revoking, and management of e-books across various sections.
+**Library-Central** is a multi-user library management system built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and Material UI for the user interface. It enables librarians to maintain sections and e-books while allowing users to browse, request, and manage e-books. The platform functions like an online library, facilitating the issuing, revoking, and management of e-books across various sections.
+
+## Demo Video
+Check out our demo video to get a quick overview of Library Central's features and how to use them.<br/>
+[Watch Demo Video](https://www.youtube.com/watch?v=RS56igZdGEs)
 
 ## Features
 
 ### Roles and Responsibilities
+The Library-Central application supports two distinct roles: Librarian and User. Each role has specific responsibilities and permissions within the system to ensure effective management and utilization of library resources.
 - **Librarian**
   - Manage sections and e-books in the library.
   - Monitor users and track library statistics.
