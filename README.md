@@ -27,7 +27,7 @@ The Library-Central application supports two distinct roles: Librarian and User.
    - Single librarian role maintained in the system.
 
 2. **Librarian Dashboard**
-   - View application statistics: active users, grant requests, issued and revoked e-books.
+   - View application statistics: active users, total sections, total e-books and total issued e-books.
    - View all existing library users and delete users if necessary.
 
 3. **User Dashboard**
@@ -78,10 +78,10 @@ cd Library-Central
     MONGO_URI=your_mongo_db_uri_here
     JWT_SECRET=your_jwt_secret_here
     DEFAULT_LIBRARIAN_USERNAME=your_default_libarian_username_here
-    DEFAULT_LIBRARIAN_PASSWORD=your_default_libarian_password_here
     DEFAULT_LIBRARIAN_EMAIL=your_default_libarian_email_here
+    DEFAULT_LIBRARIAN_PASSWORD=your_default_libarian_password_here
     ```
-    Replace `your_mongo_db_url_here`, `your_jwt_secret_here`, `your_librarian_username`, `your_librarian_email`, and `your_librarian_password` with your actual MongoDB connection URL, JWT secret, and librarian credentials.
+    Replace `your_mongo_db_url_here`, `your_jwt_secret_here`, `your_default_libarian_username_here`, `your_default_libarian_email_here`, and `your_default_libarian_password_here` with your actual MongoDB connection URL, JWT secret, and librarian credentials.
    
 3. Install dependencies:
     ```bash
